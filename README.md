@@ -1,4 +1,4 @@
-# Javascript Code Generator
+# Code Generator
 
 ## Overview
 Javascript Code Generator is a web application that generates HTML code using AI and provides real-time preview functionality. Using OpenAI's GPT models, it can generate HTML code from prompts and instantly show the preview.
