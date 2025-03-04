@@ -2,6 +2,7 @@ let currentEndpoint = "";
 let currentApiKey = "";
 let currentModel = "gpt-3.5-turbo";
 let promptSuffix = "";
+let messageHistory = []; // 会話履歴を保持
 
 function saveSettings() {
     currentEndpoint = document.getElementById('endpointInput').value;
@@ -9,6 +10,48 @@ function saveSettings() {
     currentModel = document.getElementById('modelSelect').value;
     promptSuffix = document.getElementById('promptSuffixInput').value;
     alert("設定が保存されました");
+}
+
+function resetSession() {
+    messageHistory = [];
+    document.getElementById('inputPrompt').value = '';
+    document.getElementById('outputArea').value = '';
+    document.getElementById('previewArea').innerHTML = '';
+    document.getElementById('executionResult').textContent = 'セッションをリセットしました';
+}
+
+function getSelectedLibraries() {
+    const libraries = {
+        'three.js': document.getElementById('useThreeJs').checked,
+        'anime.js': document.getElementById('useAnimeJs').checked,
+        'gsap': document.getElementById('useGsap').checked,
+        'p5.js': document.getElementById('useP5').checked
+    };
+
+    const selectedLibs = Object.entries(libraries)
+        .filter(([_, isSelected]) => isSelected)
+        .map(([lib]) => lib);
+
+    return selectedLibs;
+}
+
+function getLibraryUrls(libraries) {
+    const urls = {
+        'three.js': [
+            'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
+        ],
+        'anime.js': [
+            'https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js'
+        ],
+        'gsap': [
+            'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js'
+        ],
+        'p5.js': [
+            'https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js'
+        ]
+    };
+
+    return libraries.flatMap(lib => urls[lib] || []);
 }
 
 async function sendRequest() {
@@ -27,26 +70,46 @@ async function sendRequest() {
         return;
     }
 
-    // プロンプトにデフォルトの指示を追加
-    const modifiedPrompt = `${prompt}\n\n${promptSuffix}`;
+    // 現在のコードをコンテキストとして含める
+    const currentCode = outputArea.value;
+    const selectedLibraries = getSelectedLibraries();
+    const libraryInfo = selectedLibraries.length > 0 
+        ? `\n\n利用可能なライブラリ: ${selectedLibraries.join(', ')}` 
+        : '';
+
+    let contextPrompt = prompt;
+    if (currentCode) {
+        contextPrompt = `現在のコード:\n\`\`\`html\n${currentCode}\n\`\`\`\n\n指示:\n${prompt}${libraryInfo}\n\n${promptSuffix}`;
+    } else {
+        contextPrompt = `${prompt}${libraryInfo}\n\n${promptSuffix}`;
+    }
+
+    // デバッグ用：プロンプトの内容を確認
+    console.log('送信するプロンプト:', contextPrompt);
+    console.log('promptSuffix:', promptSuffix);
+
+    // メッセージ履歴を作成
+    const messages = [
+        ...messageHistory,
+        { role: "user", content: contextPrompt }
+    ];
+
+    // デバッグ用：メッセージ履歴を確認
+    console.log('メッセージ履歴:', messages);
 
     // ローディング状態の表示
     executionResult.textContent = "処理中...";
-    outputArea.value = "";
-    previewArea.innerHTML = ""; // プレビューエリアをクリア
 
     try {
         const response = await fetch(currentEndpoint, {
             method: "POST",
+            mode: 'cors',
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${currentApiKey}`
             },
             body: JSON.stringify({
-                messages: [{
-                    role: "user",
-                    content: modifiedPrompt
-                }],
+                messages: messages,
                 model: currentModel,
                 temperature: 0.7
             })
@@ -59,19 +122,33 @@ async function sendRequest() {
 
         const data = await response.json();
         
+        // デバッグ用：APIレスポンスを確認
+        console.log('APIレスポンス:', data);
+        
         if (data.choices && data.choices[0]?.message?.content) {
             let code = data.choices[0].message.content;
             
+            // デバッグ用：コード処理前後の内容を確認
+            console.log('処理前のコード:', code);
+            
             // ```html と ``` を削除
-            code = code.replace(/^```html\n?/, '')  // 先頭の```htmlを削除
-                      .replace(/```$/, '')          // 末尾の```を削除
-                      .replace(/^```\n?/, '')       // 先頭の```を削除（言語指定がない場合）
-                      .trim();                      // 前後の空白を削除
+            code = code.replace(/^```html\n?/, '')
+                      .replace(/```$/, '')
+                      .replace(/^```\n?/, '')
+                      .trim();
+            
+            console.log('処理後のコード:', code);
             
             outputArea.value = code;
             executionResult.textContent = "実行成功！";
 
-            // 生成されたコードをプレビュー
+            // 会話履歴を更新
+            messageHistory.push(
+                { role: "user", content: contextPrompt },
+                { role: "assistant", content: data.choices[0].message.content }
+            );
+
+            // プレビューを更新
             updatePreview();
         } else {
             throw new Error("APIレスポンスの形式が不正です");
@@ -88,9 +165,10 @@ function updatePreview() {
     const previewArea = document.getElementById('previewArea');
     const executionResult = document.getElementById('executionResult');
     const code = outputArea.value;
+    const selectedLibraries = getSelectedLibraries();
+    const libraryUrls = getLibraryUrls(selectedLibraries);
 
     try {
-        // iframeを作成して安全にHTMLを表示
         const iframe = document.createElement('iframe');
         iframe.style.width = '100%';
         iframe.style.height = '100%';
@@ -98,10 +176,22 @@ function updatePreview() {
         previewArea.innerHTML = '';
         previewArea.appendChild(iframe);
 
-        // iframeのドキュメントにHTMLを書き込む
         const iframeDoc = iframe.contentWindow.document;
         iframeDoc.open();
-        iframeDoc.write(code);
+        
+        // ライブラリを読み込んでからコードを実行
+        const libraryScripts = libraryUrls.map(url => `<script src="${url}"></script>`).join('\n');
+        iframeDoc.write(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                ${libraryScripts}
+            </head>
+            <body>
+                ${code}
+            </body>
+            </html>
+        `);
         iframeDoc.close();
 
         executionResult.textContent = "プレビューを更新しました";
@@ -115,7 +205,9 @@ function updatePreview() {
 window.addEventListener('load', () => {
     const promptSuffixInput = document.getElementById('promptSuffixInput');
     if (!promptSuffixInput.value) {
-        promptSuffixInput.value = "余計な記述を含めずHTMLのコードだけを返してください。囲み文字もいりません。必要であればCSSやJavascriptのライブラリもHTMLの中で使ってください。";
+        promptSuffixInput.value = "余計な記述を含めずHTMLのコードだけを返してください。囲み文字もいりません。必要なJavaScriptライブラリは自動的に含めます。";
     }
+    // デバッグ用：初期化時のpromptSuffixを確認
     promptSuffix = promptSuffixInput.value;
+    console.log('初期化時のpromptSuffix:', promptSuffix);
 });

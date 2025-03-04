@@ -11,7 +11,10 @@
         <header>Javascript Code Generator</header>
         <div class="section-title">プロンプト</div>
         <textarea id="inputPrompt" placeholder="プロンプトを入力..."></textarea>
-        <button onclick="sendRequest()">実行</button>
+        <div class="button-group">
+            <button onclick="sendRequest()">実行</button>
+            <button onclick="resetSession()" class="reset-button">リセット</button>
+        </div>
         
         <div class="output-container">
             <div class="section-title">生成されたコード</div>
@@ -27,8 +30,30 @@
                 <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
                 <option value="gpt-4">GPT-4</option>
                 <option value="gpt-4-turbo-preview">GPT-4 Turbo</option>
+                <option value="gpt-4-1106-preview">GPT-4 Mini</option>
             </select>
-            <textarea id="promptSuffixInput" placeholder="プロンプトに追加する指示を入力...">余計な記述を含めずHTMLのコードだけを返してください。囲み文字もいりません。必要であればCSSやJavascriptのライブラリもHTMLの中で使ってください。</textarea>
+            <div class="library-selection">
+                <div class="section-title">ライブラリ選択</div>
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="useThreeJs" value="three.js">
+                        Three.js (3Dアニメーション)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="useAnimeJs" value="anime.js">
+                        Anime.js (高度な2Dアニメーション)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="useGsap" value="gsap">
+                        GSAP (プロフェッショナルアニメーション)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="useP5" value="p5.js">
+                        P5.js (クリエイティブコーディング)
+                    </label>
+                </div>
+            </div>
+            <textarea id="promptSuffixInput" placeholder="プロンプトに追加する指示を入力...">余計な記述を含めずHTMLのコードだけを返してください。囲み文字もいりません。必要なJavaScriptライブラリは自動的に含めます。</textarea>
             <button onclick="saveSettings()">保存</button>
         </div>
     </div>

@@ -1,95 +1,78 @@
-# Code Generator
+# HTML Code Generator / HTMLコードジェネレーター
 
-## Overview
-Javascript Code Generator is a web application that generates HTML code using AI and provides real-time preview functionality. Using OpenAI's GPT models, it can generate HTML code from prompts and instantly show the preview.
+An application that generates HTML code using ChatGPT API, with support for various animation libraries.
+ChatGPT APIを使用してHTMLコードを生成し、様々なアニメーションライブラリをサポートするアプリケーション。
 
-## Features
-- AI-powered HTML code generation
-- Real-time preview of generated code
-- Support for multiple GPT models (GPT-3.5 Turbo, GPT-4, GPT-4 Turbo)
-- Customizable prompt suffix
-- Secure API configuration management
+## Features / 機能
 
-## Requirements
-- Modern web browser (Chrome, Firefox, Safari, Edge, etc.)
-- OpenAI API key
-- Internet connection
+- HTML code generation using ChatGPT API / ChatGPT APIによるHTMLコード生成
+- Real-time preview / リアルタイムプレビュー
+- Code editing capability / コード編集機能
+- Support for multiple GPT models / 複数のGPTモデルに対応
+- Animation library integration / アニメーションライブラリの統合
+  - Three.js (3D animation / 3Dアニメーション)
+  - Anime.js (Advanced 2D animation / 高度な2Dアニメーション)
+  - GSAP (Professional animation / プロフェッショナルアニメーション)
+  - P5.js (Creative coding / クリエイティブコーディング)
+- Conversation history management / 会話履歴の管理
+- Session reset function / セッションリセット機能
 
-## Installation
-1. Clone or download the repository:
-2. Navigate to the project directory:
-3. Either serve the files using a web server or open index.html directly in your browser.
+## Setup / セットアップ
 
-## Usage
-1. Configure the following in the "LLM Settings" section on the left:
-   - Endpoint URL
-   - API key
-   - GPT model selection
-   - Prompt suffix (if needed)
+1. Clone the repository / リポジトリをクローン
 
-2. Click "Save" to store your settings
+2. Open index.html in your browser / ブラウザでindex.htmlを開く
 
-3. Enter your HTML description in the prompt input field
+3. Configure the LLM settings / LLM設定を構成
+   - Enter endpoint URL / エンドポイントURLを入力
+   - Enter API key / APIキーを入力
+   - Select model / モデルを選択
+   - Choose animation libraries / アニメーションライブラリを選択
 
-4. Click "Execute" to generate the code
+## Usage / 使用方法
 
-5. The generated code will be automatically previewed
-   - Use the "Update Preview" button to refresh the preview if needed
+1. Configure LLM Settings / LLM設定を行う
+   - Set endpoint and API key / エンドポイントとAPIキーを設定
+   - Select desired GPT model / 使用したいGPTモデルを選択
+   - Choose required animation libraries / 必要なアニメーションライブラリを選択
 
-## File Structure
-- `index.html` - Main HTML structure
-- `style.css` - Application styling
-- `script.js` - Application logic
+2. Enter Prompt / プロンプトを入力
+   - Write your request for HTML code generation / HTMLコード生成のリクエストを記述
 
-## Security Notes
-- Handle API keys with care and never commit them to public repositories
-- Generated code is executed safely within an iframe
+3. Generate Code / コードを生成
+   - Click "Execute" button / 「実行」ボタンをクリック
+   - Generated code will appear in the output area / 生成されたコードが出力エリアに表示
 
-## Customization
-You can customize the prompt suffix to adjust the format and constraints of the generated code. The default setting is:
+4. Preview and Edit / プレビューと編集
+   - View the result in the preview area / プレビューエリアで結果を確認
+   - Edit the code if needed / 必要に応じてコードを編集
+   - Click "Update Preview" to see changes / 「プレビュー更新」で変更を確認
 
-## Advanced Configuration
-The application allows you to:
-- Choose between different GPT models
-- Customize the endpoint URL
-- Modify the default prompt suffix
-- Adjust the preview display
+5. Session Management / セッション管理
+   - Use "Reset" button to start a new session / 「リセット」ボタンで新規セッションを開始
+   - Previous conversation context is maintained until reset / リセットまで前の会話コンテキストを維持
 
-## Development
-The application is built using vanilla JavaScript, HTML, and CSS, making it easy to modify and extend. The code is structured as follows:
+## Supported Models / 対応モデル
 
-- Frontend UI components in `index.html`
-- Styling and layout in `style.css`
-- Core functionality and API integration in `script.js`
+- GPT-3.5 Turbo
+- GPT-4
+- GPT-4 Turbo
+- GPT-4 Mini
 
-## Error Handling
-The application includes comprehensive error handling for:
-- API connection issues
-- Invalid input validation
-- Preview rendering problems
-- Configuration errors
+## Animation Libraries / アニメーションライブラリ
 
-## Best Practices
-- Always review generated code before using in production
-- Keep your API key secure
-- Monitor your API usage and costs
-- Test generated code thoroughly
+- Three.js (v128)
+- Anime.js (v3.2.1)
+- GSAP (v3.9.1)
+- P5.js (v1.4.0)
 
-## Known Limitations
-- API rate limits may apply
-- Preview functionality may not support all HTML features
-- Some complex JavaScript interactions may not work in preview mode
+## Notes / 注意事項
 
-## License
-This project is released under the MIT License.
+- API key is required for operation / 動作にはAPIキーが必要です
+- Keep your API key secure / APIキーは安全に管理してください
+- Some features may require specific GPT models / 一部機能は特定のGPTモデルが必要な場合があります
 
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+## License / ライセンス
 
-## Support
-If you encounter any issues or have questions, please open an issue in the repository.
+MIT License
 
-## Disclaimer
-- API usage may incur charges
-- Be aware of API usage limits
-- Always review generated code before use
