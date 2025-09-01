@@ -1,0 +1,15 @@
+{
+  "name": "code-generator",
+  "version": "1.0.0",
+  "description": "An application that generates HTML/JavaScript code using ChatGPT API, with support for various animation libraries. ChatGPT APIを使用してHTML/JavaScriptコードを生成し、様々なアニメーションライブラリをサポートするアプリケーション。",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
