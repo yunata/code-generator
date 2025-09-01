@@ -72,17 +72,18 @@ async function sendRequest() {
 
     // 現在のコードをコンテキストとして含める
     const currentCode = outputArea.value;
-    const selectedLibraries = getSelectedLibraries();
-    const libraryInfo = selectedLibraries.length > 0 
-        ? `\n\n利用可能なライブラリ: ${selectedLibraries.join(', ')}` 
-        : '';
+      const selectedLibraries = getSelectedLibraries();
+      const libraryInfo = selectedLibraries.length > 0
+          ? `利用可能なライブラリ: ${selectedLibraries.join(', ')}`
+          : '';
+      const libraryInfoLine = libraryInfo ? `\n${libraryInfo}` : '';
 
-    let contextPrompt = prompt;
-    if (currentCode) {
-        contextPrompt = `現在のコード:\n\`\`\`html\n${currentCode}\n\`\`\`\n\n指示:\n${prompt}${libraryInfo}\n\n${promptSuffix}`;
-    } else {
-        contextPrompt = `${prompt}${libraryInfo}\n\n${promptSuffix}`;
-    }
+      let contextPrompt = prompt;
+      if (currentCode) {
+          contextPrompt = `現在のコード:\n\`\`\`html\n${currentCode}\n\`\`\`\n\n指示:\n${prompt}${libraryInfoLine}\n\n${promptSuffix}`;
+      } else {
+          contextPrompt = `${prompt}${libraryInfoLine}\n\n${promptSuffix}`;
+      }
 
     // デバッグ用：プロンプトの内容を確認
     console.log('送信するプロンプト:', contextPrompt);
@@ -211,3 +212,8 @@ window.addEventListener('load', () => {
     promptSuffix = promptSuffixInput.value;
     console.log('初期化時のpromptSuffix:', promptSuffix);
 });
+
+// Export functions for testing environments
+if (typeof module !== 'undefined') {
+    module.exports = { getSelectedLibraries, getLibraryUrls };
+}

@@ -1,7 +1,7 @@
-# HTML Code Generator / HTMLコードジェネレーター
+# JavaScript Code Generator / JavaScriptコードジェネレーター
 
-An application that generates HTML code using ChatGPT API, with support for various animation libraries.
-ChatGPT APIを使用してHTMLコードを生成し、様々なアニメーションライブラリをサポートするアプリケーション。
+An application that generates HTML/JavaScript code using ChatGPT API, with support for various animation libraries.
+ChatGPT APIを使用してHTML/JavaScriptコードを生成し、様々なアニメーションライブラリをサポートするアプリケーション。
 
 ## Features / 機能
 
